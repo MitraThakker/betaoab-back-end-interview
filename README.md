@@ -12,7 +12,7 @@
 
 ## Service Architecture
 
-![Service Architecture](https://github.com/MitraThakker/betaoab-back-end-interview/blob/master/assets/ServiceArchitecture.jpg?raw=true)
+![Service Architecture](https://github.com/MitraThakker/betaoab-back-end-interview/blob/main/assets/ServiceArchitecture.jpg)
 
 ## Prerequisites
 
