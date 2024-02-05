@@ -1,52 +1,85 @@
+import logging
+
 from flask import Flask, jsonify, request, Response
+
+import svc
+from common.errors import InvalidUrlError
 
 app = Flask('admin')
 
 
 @app.route('/', methods=['GET'])
 def index():
-    return "Hello, world!"
+    return 'Hello, world!'
 
 
 @app.route('/api/links', methods=['GET'])
 def list_all_links():
     try:
-        return jsonify()
-    except Exception:
-        return Response("error", status=503)
+        return jsonify(svc.list_all_links()), 200
+    except Exception as e:
+        logging.error(f'Error listing all links: {e}')
+        return Response(f'Error: {e}', status=500)
 
 
 @app.route('/api/links/<int:link_id>', methods=['GET'])
 def link_details(link_id: int):
     try:
-        return jsonify(), 200
-    except Exception:
-        return Response("error", status=500)
+        link = svc.link_details(link_id)
+        if not link:
+            return jsonify({'error': f'link with id {link_id} not found'}), 404
+        return jsonify(link), 200
+    except Exception as e:
+        logging.error(f'Error fetching link details: {e}')
+        return Response(f'Error: {e}', status=500)
 
 
 @app.route('/api/links', methods=['POST'])
 def add_link():
     req = request.get_json()
-    if req:
-        return jsonify(req), 200
-    return Response("error", status=400)
+    if not req:
+        return Response("error", status=400)
+    try:
+        return jsonify({'link_id': svc.add_link(req)}), 200
+    except InvalidUrlError:
+        return jsonify({'error': f'invalid URL'}), 400
+    except Exception as e:
+        logging.error(f'Error when adding link: {e}')
+        return Response(f'Error: {e}', status=500)
 
 
 @app.route('/api/links/<int:link_id>/upvote', methods=['POST'])
 def upvote_link(link_id: int):
-    if link_id:
-        return Response("success", status=200)
-    else:
-        return Response("error", status=400)
+    try:
+        link = svc.upvote_link(link_id)
+        if not link:
+            return jsonify({'error': f'link with id {link_id} not found'}), 404
+        return jsonify(link), 200
+    except Exception as e:
+        logging.error(f'Error fetching link details: {e}')
+        return Response(f'Error: {e}', status=500)
 
 
 @app.route('/api/links/<int:link_id>/downvote', methods=['POST'])
 def downvote_link(link_id: int):
-    if link_id:
-        return Response("success", status=200)
-    else:
-        return Response("error", status=400)
+    try:
+        link = svc.downvote_link(link_id)
+        if not link:
+            return jsonify({'error': f'link with id {link_id} not found'}), 404
+        return jsonify(link), 200
+    except Exception as e:
+        logging.error(f'Error fetching link details: {e}')
+        return Response(f'Error: {e}', status=500)
+
+
+@app.route('/api/links/truncate', methods=['POST'])
+def truncate():
+    try:
+        svc.truncate()
+        return jsonify({}), 200
+    except Exception as e:
+        return Response(f'Error: {e}', status=500)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5005)

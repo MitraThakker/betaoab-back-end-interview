@@ -1,11 +1,8 @@
 import logging
+import os
 import sqlite3
 from abc import ABC
 from threading import local
-
-logging.basicConfig(
-    level=logging.INFO
-)
 
 
 def dict_factory(cursor, row):
@@ -28,7 +25,8 @@ class DBConnection(ABC):
 
 class SQLiteDBConnection(DBConnection):
     def __init__(self):
-        self.db = '/Users/mitra/links.db'
+        # This can be passed as a parameter. This is just for simplicity here. :)
+        self.db = os.environ.get('DB_CONN_SQLITE')
 
     def __enter__(self):
         try:
