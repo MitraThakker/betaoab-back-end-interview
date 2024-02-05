@@ -3,7 +3,6 @@
 ## Contents
 
 1. [Service Architecture](#service-architecture)
-    * [Design Considerations](#design-considerations)
 2. [Prerequisites](#prerequisites)
 3. [Running The Service](#running-the-service)
 4. [Cleaning Up](#cleaning-up)
@@ -12,7 +11,7 @@
 
 ## Service Architecture
 
-![Service Architecture](https://github.com/MitraThakker/betaoab-back-end-interview/blob/main/assets/ServiceArchitecture.jpg)
+![Service Architecture](https://github.comMitraThakker/betaoab-back-end-interview/blob/main/assets/ServiceArchitecture.jpg)
 
 ## Prerequisites
 
@@ -74,7 +73,7 @@ docker image rm IMAGE_ID
 
 ## Cases Tested
 
-1. Create link
+1. Create link - success
 
 ```
 URL: 0.0.0.0:5005/api/links
@@ -82,12 +81,149 @@ METHOD: POST
 
 Request:
 {
-  "url": "https://www.yahoo.com/"
+  "url": "https://yahoo.com"
 }
 
-Response:
+Response: 200 - Ok
 {
     "link_id": 1
+}
+```
+
+2. Create link - failure
+
+```
+URL: 0.0.0.0:5005/api/links
+METHOD: POST
+
+Request:
+{
+  "url": "https://yahoo"
+}
+
+Response: 400 - Bad Request
+{
+    "error": "invalid URL"
+}
+```
+
+3. List all links
+
+```
+URL: 0.0.0.0:5005/api/links
+METHOD: GET
+
+Request: NA
+
+Response: 200 - Ok
+[
+    {
+        "created_at": "2024-02-05 01:24:38.246443",
+        "downvotes": 0,
+        "id": 1,
+        "score": 0,
+        "upvotes": 0,
+        "url": "https://yahoo.com"
+    }
+]
+```
+
+4. Get link details by ID - success
+
+```
+URL: 0.0.0.0:5005/api/links/1
+METHOD: GET
+
+Request: NA
+
+Response: 200 - Ok
+{
+    "created_at": "2024-02-05 01:24:38.246443",
+    "downvotes": 0,
+    "id": 1,
+    "score": 0,
+    "upvotes": 0,
+    "url": "https://yahoo.com"
+}
+```
+
+5. Get link details by ID - failure
+
+```
+URL: 0.0.0.0:5005/api/links/2
+METHOD: GET
+
+Request: NA
+
+Response: 404 - Not Found
+{
+    "error": "link with id 2 not found"
+}
+```
+
+6. Upvote link - success
+
+```
+URL: 0.0.0.0:5005/api/links/1/upvote
+METHOD: POST
+
+Request: NA
+
+Response: 200 - Ok
+{
+    "created_at": "2024-02-05 01:24:38.246443",
+    "downvotes": 0,
+    "id": 1,
+    "score": 1,
+    "upvotes": 1,
+    "url": "https://yahoo.com"
+}
+```
+
+7. Upvote link - failure
+
+```
+URL: 0.0.0.0:5005/api/links/2/upvote
+METHOD: POST
+
+Request: NA
+
+Response: 404 - Not Found
+{
+    "error": "link with id 2 not found"
+}
+```
+
+8. Downvote link - success
+
+```
+URL: 0.0.0.0:5005/api/links/1/downvote
+METHOD: POST
+
+Request: NA
+
+Response: 200 - Ok
+{
+    "created_at": "2024-02-05 01:24:38.246443",
+    "downvotes": 1,
+    "id": 1,
+    "score": 0,
+    "upvotes": 1,
+    "url": "https://yahoo.com"
+}
+```
+
+9. Downvote link - failure
+
+```
+URL: 0.0.0.0:5005/api/links/2/downvote
+METHOD: POST
+
+Request: NA
+
+Response: 404 - Not Found
+{
+    "error": "link with id 2 not found"
 }
 ```
 
